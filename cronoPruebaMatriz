@@ -1,0 +1,41 @@
+import time
+from rgbmatrix import RGBMatrix, RGBMatrixOptions, graphics
+
+# Configuración inicial para la matriz LED
+options = RGBMatrixOptions()
+options.rows = 64
+options.cols = 64
+options.chain_length = 1
+options.parallel = 1
+options.hardware_mapping = 'regular'  # Ajusta esto según tu configuración
+matrix = RGBMatrix(options=options)
+
+# Función para mostrar el tiempo en el panel RGB
+def mostrar_tiempo_en_panel(tiempo, matrix):
+    canvas = matrix.CreateFrameCanvas()
+    font = graphics.Font()
+    font.LoadFont("/home/pi/rpi-rgb-led-matrix/fonts/9x15B.bdf")
+    textColor = graphics.Color(255, 255, 255)  # Blanco
+    tiempo_str = f"{tiempo:.2f}s"
+    canvas.Clear()
+    graphics.DrawText(canvas, font, 10, 32, textColor, tiempo_str)
+    matrix.SwapOnVSync(canvas)
+
+# Función del cronómetro
+def cronometro():
+    print("Cronómetro iniciado automáticamente.")
+
+    # Inicia el cronómetro desde el tiempo actual
+    start_time = time.time()
+
+    # Ciclo continuo para mostrar el cronómetro
+    while True:
+        elapsed_time = time.time() - start_time
+        mostrar_tiempo_en_panel(elapsed_time, matrix)
+        time.sleep(0.1)  # Actualiza cada 0.1 segundos
+
+if __name__ == "__main__":
+    try:
+        cronometro()
+    except KeyboardInterrupt:
+        print("Programa interrumpido.")
